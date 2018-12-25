@@ -78,7 +78,7 @@ opt = keras.optimizers.Adam(lr=0.0001)
 model.compile(loss = 'categorical_crossentropy', optimizer=opt, metrics=['accuracy'])
 
 model.fit_generator(trening_gomila, steps_per_epoch = 280, validation_data = validaciona_gomila,
-                    validation_steps = 30, epochs = 90, verbose = 1)
+                    validation_steps = 30, epochs = 90, verbose = 2)
 
 
 model.save('melanoma.h5')
