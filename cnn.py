@@ -31,14 +31,13 @@ model = Sequential()
 
 model.add(Conv2D(32, (3,3), padding = 'same', input_shape=(144, 144, 1)))
 model.add(Activation('relu'))
-model.add(Conv2D(32, (3,3), padding = 'same'))
+model.add(Conv2D(64, (3,3), padding = 'same'))
 model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Dropout(0.1))
 
 model.add(Conv2D(64, (3, 3), padding='same'))
 model.add(Activation('relu'))
-model.add(Conv2D(64, (3, 3), padding='same'))
+model.add(Conv2D(128, (3, 3), padding='same'))
 model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Dropout(0.1))
@@ -53,6 +52,8 @@ model.add(Dropout(0.15))
 
 model.add(Conv2D(256, (3, 3), padding='same'))
 model.add(Activation('relu'))
+model.add(Conv2D(256, (3, 3), padding='same'))
+model.add(Activation('relu'))
 model.add(Conv2D(512, (3, 3), padding='same'))
 model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
@@ -63,7 +64,7 @@ model.add(Flatten())
 model.add(Dense(1024))
 model.add(Activation('relu'))
 model.add(Dropout(0.5))
-model.add(Dense(1024))
+model.add(Dense(1536))
 model.add(Activation('relu'))
 model.add(Dropout(0.5))
 
@@ -78,7 +79,7 @@ opt = keras.optimizers.Adam(lr=0.0001)
 model.compile(loss = 'categorical_crossentropy', optimizer=opt, metrics=['accuracy'])
 
 model.fit_generator(trening_gomila, steps_per_epoch = 280, validation_data = validaciona_gomila,
-                    validation_steps = 30, epochs = 90, verbose = 2)
+                    validation_steps = 30, epochs = 10, verbose = 2)
 
 
 model.save('melanoma.h5')
