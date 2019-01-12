@@ -20,6 +20,7 @@ trening_skup = folder_u_kome_se_nalazi_dataset_folder + 'dataset/train'
 validacioni_skup = folder_u_kome_se_nalazi_dataset_folder + 'dataset/valid'
 test_skup = folder_u_kome_se_nalazi_dataset_folder + 'dataset/test'
 
+#romeve color_mode for RGB images
 trening_gomila = ImageDataGenerator().flow_from_directory(trening_skup, target_size=(144, 144),
                     classes=['YES', 'NO'], batch_size=32, color_mode='grayscale')
 validaciona_gomila = ImageDataGenerator().flow_from_directory(validacioni_skup, target_size=(144, 144),
@@ -30,6 +31,7 @@ test_gomila = ImageDataGenerator().flow_from_directory(test_skup, target_size=(1
 
 model = Sequential()
 
+#change input shape to (144, 144, 3) for RGB images
 model.add(Conv2D(32, (3,3), padding = 'same', input_shape=(144, 144, 1)))
 model.add(Activation('relu'))
 model.add(Conv2D(64, (3,3), padding = 'same'))
