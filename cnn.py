@@ -16,62 +16,69 @@ from keras.models import load_model
 
 folder_u_kome_se_nalazi_dataset_folder = '/home/djole/Downloads/MELANOMA/'
 
-trening_skup = folder_u_kome_se_nalazi_dataset_folder + 'dataset/train'
-validacioni_skup = folder_u_kome_se_nalazi_dataset_folder + 'dataset/valid'
-test_skup = folder_u_kome_se_nalazi_dataset_folder + 'dataset/test'
+trening_skup = folder_u_kome_se_nalazi_dataset_folder + 'datasetRGB/train'
+validacioni_skup = folder_u_kome_se_nalazi_dataset_folder + 'datasetRGB/valid'
+test_skup = folder_u_kome_se_nalazi_dataset_folder + 'datasetRGB/test'
 
 trening_gomila = ImageDataGenerator().flow_from_directory(trening_skup, target_size=(144, 144),
-                    classes=['YES', 'NO'], batch_size=32, color_mode='grayscale')
+                    classes=['YES', 'NO'], batch_size=32)
 validaciona_gomila = ImageDataGenerator().flow_from_directory(validacioni_skup, target_size=(144, 144),
-                    classes=['YES', 'NO'], batch_size=32, color_mode='grayscale')
+                    classes=['YES', 'NO'], batch_size=32)
 test_gomila = ImageDataGenerator().flow_from_directory(test_skup, target_size=(144, 144),
-                    classes=['YES', 'NO'], batch_size=32, color_mode='grayscale')
+                    classes=['YES', 'NO'], batch_size=32, shuffle = False)
+
 
 model = Sequential()
 
-model.add(Conv2D(32, (3,3), padding = 'same', input_shape=(144, 144, 1)))
+model.add(Conv2D(128, (3,3), padding = 'same', input_shape=(144, 144, 3), kernel_initializer='he_normal'))
 model.add(Activation('relu'))
-model.add(Conv2D(64, (3,3), padding = 'same'))
+model.add(BatchNormalization())
+model.add(Conv2D(128, (3,3), padding = 'same', kernel_initializer='he_normal'))
 model.add(Activation('relu'))
+model.add(BatchNormalization())
 model.add(MaxPooling2D(pool_size=(2, 2)))
 
-model.add(Conv2D(64, (3, 3), padding='same'))
+model.add(Conv2D(128, (3, 3), padding='same', kernel_initializer='he_normal'))
 model.add(Activation('relu'))
-model.add(Conv2D(128, (3, 3), padding='same'))
+model.add(BatchNormalization())
+model.add(Conv2D(128, (3, 3), padding='same', kernel_initializer='he_normal'))
 model.add(Activation('relu'))
+model.add(BatchNormalization())
 model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Dropout(0.1))
 
-
-model.add(Conv2D(128, (3, 3), padding='same'))
+model.add(Conv2D(256, (3, 3), padding='same', kernel_initializer='he_normal'))
 model.add(Activation('relu'))
-model.add(Conv2D(256, (3, 3), padding='same'))
+model.add(BatchNormalization())
+model.add(Conv2D(256, (3, 3), padding='same', kernel_initializer='he_normal'))
 model.add(Activation('relu'))
+model.add(BatchNormalization())
+model.add(Conv2D(256, (3, 3), padding='same', kernel_initializer='he_normal'))
+model.add(Activation('relu'))
+model.add(BatchNormalization())
 model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Dropout(0.15))
 
-model.add(Conv2D(256, (3, 3), padding='same'))
+model.add(Conv2D(512, (3, 3), padding='same', kernel_initializer='he_normal'))
 model.add(Activation('relu'))
-model.add(Conv2D(256, (3, 3), padding='same'))
+model.add(BatchNormalization())
+model.add(Conv2D(512, (3, 3), padding='same', kernel_initializer='he_normal'))
 model.add(Activation('relu'))
-model.add(Conv2D(512, (3, 3), padding='same'))
+model.add(BatchNormalization())
+model.add(Conv2D(512, (3, 3), padding='same', kernel_initializer='he_normal'))
 model.add(Activation('relu'))
+model.add(BatchNormalization())
 model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Dropout(0.15))
 
 model.add(Flatten())
 
-model.add(Dense(1024))
+model.add(Dense(2048, kernel_initializer='he_normal'))
 model.add(Activation('relu'))
 model.add(Dropout(0.5))
-model.add(Dense(1536))
+model.add(Dense(2560, kernel_initializer='he_normal'))
 model.add(Activation('relu'))
 model.add(Dropout(0.5))
-
 
 model.add(Dense(2))
 model.add(Activation('softmax'))
-
 
 
 opt = keras.optimizers.Adam(lr=0.0001)
@@ -79,7 +86,7 @@ opt = keras.optimizers.Adam(lr=0.0001)
 model.compile(loss = 'categorical_crossentropy', optimizer=opt, metrics=['accuracy'])
 
 model.fit_generator(trening_gomila, steps_per_epoch = 280, validation_data = validaciona_gomila,
-                    validation_steps = 30, epochs = 10, verbose = 2)
+                    validation_steps = 30, epochs = 100, verbose = 2)
 
 
 model.save('melanoma.h5')
@@ -92,6 +99,11 @@ for i in range(64):
 predvidjanja = model.predict_generator(test_gomila, steps = 65, verbose = 2)
 
 test_oznake = test_oznake[:,0]
+for i in predvidjanja:
+	if i[0] >= i[1]:
+		i[0] = 1
+	else:
+		i[0] = 0
 cm = confusion_matrix(test_oznake, predvidjanja[:,0])
 
 #funkcija copy-paste-ovana sa scikit-learn.org
@@ -132,9 +144,3 @@ def plot_confusion_matrix(cm, classes,
 
 cm_plot_oznake = ['YES', 'NO']
 plot_confusion_matrix(cm, cm_plot_oznake, title='Matrica konfuzije')
-
-
-
-
-
-
