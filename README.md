@@ -8,4 +8,4 @@ Model can be downloaded from:
 https://drive.google.com/open?id=1LfFek-0y-r1dqOsD3JuuhzG3CbYvwcFo
 
 Project report (in Serbian):
-https://drive.google.com/open?id=1vEhiHUT9Jk4ng2S7ojJBeDNyqB3fZaAXSMUJGvVfHIM
+https://drive.google.com/open?id=1VuTn-wE_zmy72PTS7PK7u2LEtsfOYacJ
